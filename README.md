@@ -36,5 +36,5 @@
     
     
     => 각 행마다 컬럼 갯수를 세줌 
-    
-    ![wwwwwwwwwwwwwwwwwwwwww](https://user-images.githubusercontent.com/69393030/136308909-f3b020bc-62d1-474b-9333-7d05bad9b4e7.PNG)
+  
+![wwwwwwwwwwwwwwwwwwwwww](https://user-images.githubusercontent.com/69393030/136308966-7a4212c2-fbd0-40a8-8288-117161174b57.PNG)
