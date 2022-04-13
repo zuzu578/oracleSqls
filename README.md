@@ -31,6 +31,36 @@ from (select BoardID , Subject from BoardContent order by BoardID)a;
 
 7 update 문의 set 절 
 
+# 스칼라 서브쿼리
+select 절에 사용하는 서브쿼리이다.
+스칼라 서브쿼리는 한행 , 한컬럼만을 반환하는 서브쿼리를 말한다. 때문에 여러행이 반환되면 오류가난다.
+```sql
+SELECT T1.C1, (SELECT AVG(T2.C1) FROM T2 T2)
+FROM T1 T1;
+```
+# 인라인 뷰 
+from 절에 사용하는 서브쿼리이다.
+기본적으로 from 절에 테이블 명이 오도록 되어있으나 서브쿼리가 from 절에 사용되면 동적으로 생성된 테이블 처럼 사용할수있다.
+인라인 뷰는 sql 문이 실행될때만 임시적으로 생성되는 동적인 뷰이기 때문에 데이터베이스에 해당 정보가 저장되지 않는다.
+인라인 뷰는 동적으로 조인 방식을 사용하는것과 같다.
+```sql
+SELECT T1.C1, T2.C1, T2.C2
+FROM T1 T1,
+     (SELECT C1, C2 FROM T2) T2
+WHERE T1.C1 = T2.C1;
+
+```
+# having 절에서 사용하는 서브쿼리
+그룹함수와 함께 사용될때 그룹핑된 결과에 대해 부가적인 조건을 주기위해사용.
+```sql
+SELECT T1.C1, T2.C1, T2.C2
+FROM T1 T1, T2 T2
+WHERE T1.C1 = T2.C1
+GROUP BY T1.C1, T2.C1, T2.C2
+HAVING AVG(T1.C1) < (SELECT AVG(C1)
+                     FROM T2 );
+```
+
 select a.* , (select z.contents from BoardContent z where z.BoardID = a.BoardID) as Contents from
 (select BoardID , Subject from BoardContent) a;
 
