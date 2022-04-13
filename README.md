@@ -1,3 +1,64 @@
+# subquery
+select a.* , (select 어쩌구, 저쩌구 from test z where z.boardId = a.boardId) as contents from 
+(select * from board) a 
+
+서브쿼리는 select 절에서도 사용가능 하며 , from 절에서도 사용이가능함 
+``` sql
+select a.*,(select  z.contents from BoardContent z where z.BoardID = a.BoardID) as contents  from 
+(SELECT  
+	  a.BoardID
+    ,[Subject]  
+    ,cast(Contents as nvarchar) Contents  
+    , CONVERT(char(10), a.CreateDate, 120) as CreateDate  
+    ,isnull(WorkNames ,'없음') WorkNames 
+	,AdminNames
+
+   FROM [dbo].[BoardContent] a Join (SELECT CValue, CType FROM Common WHERE CExplain = 'BoardType' AND CValue = 1) b On a.BoardType = b.CValue  --and isnull(a.GubunPart, '') != '구분없음'
+    Join  
+   ( 
+   SELECT DISTINCT a.BoardID,  STUFF  
+                   ((SELECT  ',' + WorkName AS [text()]  
+                     FROM     WorkPartBoardRelations b Join WorkPart c ON b.WorkPartID = c.WorkPartID  and b.WorkPartID = Case When 635 <> 0 Then c.WorkPartID Else b.WorkPartID End 
+					
+                     WHERE  b.BoardID = a.BoardID FOR XML PATH('')), 1, 1, '') AS WorkNames  
+      FROM     BoardContent a
+   ) dd ON a.BoardID = dd.BoardID 
+   left outer Join
+   ( 
+   SELECT DISTINCT a.BoardID,  STUFF  
+                   ((SELECT  ',' + AdminName AS [text()]  
+                     FROM     BoardAdminRelations b Join Admin c ON b.AdminID = c.AdminID  --and b.WorkPartID = Case When @WorkPartID <> 0 Then @WorkPartID Else b.WorkPartID End
+                     WHERE  b.BoardID = a.BoardID FOR XML PATH('')), 1, 1, '') AS AdminNames  
+      FROM     BoardContent a   
+   ) ee ON a.BoardID = ee.BoardID 
+   left outer join
+   WorkPartBoardRelations tt ON a.BoardID = tt.BoardID  and tt.WorkPartID = Case When 635 <> 0 Then 635 Else tt.WorkPartID End
+   Join WorkPart wp ON tt.WorkPartID = wp.WorkPartID
+   Join (Select BoardID, LanguageID From BoardLanguageRelation Group by BoardID, LanguageID) ff On a.BoardID = ff.BoardID and ff.LanguageID = 2
+   Join Admin cc ON a.AdminID = cc.AdminID
+   WHERE a.BoardType = 1  
+   And Case When 0 = 0 and 0 <> '' then isnull(AdminNames,'') + ' ' + isnull(a.AdminName,'') + ' ' + isnull([Subject],'') + ' ' + isnull(cast(Contents as nvarchar(MAX)),'')   
+    When 0 = 1 then [Subject]  
+    When 0 = 2 Then AdminNames    
+    When 0 = 3 Then a.AdminName     
+    When 0 = 4 Then cast(Contents as nvarchar)   
+    When 0 = 5 Then GubunPart   
+    else '1' End  
+   like Case When 0 <= 5 and 0 <> '' then '%' + 0 + '%' else '1' end  
+   And case when 1 = 6 Then isnull(AuthorYY, '2001-01-02') Else a.CreateDate End >= '2000-01-01' and case when 1 = 6 Then isnull(AuthorYY, '2001-01-02') Else a.CreateDate End  < DATEADD(DD, 1, '2022-04-12')  
+   And a.Status = 1  And (1 != 2 OR cc.AdminKind <> 3 OR cc.AdminType <> 2)
+   Group by   a.BoardID  
+  ,[Subject]  
+  ,cast(Contents as nvarchar)   
+  ,a.CreateDate  
+  ,WorkNames 
+  ,AdminNames) a 
+ 
+
+
+```
+
+
 # oracleSqls
 프로젝트하면서 썻었던 sql 복습 
 
