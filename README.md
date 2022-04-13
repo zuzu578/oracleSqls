@@ -1,8 +1,43 @@
 # subquery
+
+# 서브쿼리란
+하나의 sql 문에 포함되어있는 또다른 sql 문
+# 주의사항
+서브쿼리를 괄호로 감싸서 사용
+
+서브쿼리는 단일행 또는 복수행 비교 연산자와 함께 사용가능
+
+서브쿼리에서는 order by를 사용하지못한다.
+
+ㄴ 예시(이렇게 못씀) 
+```sql
+select a.* , (select z.contents from BoardContent z where z.BoardID = a.boardid) as Contents 
+from (select BoardID , Subject from BoardContent order by BoardID)a;
+
+
+```
+# 서브쿼리 사용가능한 곳
+1.select 
+
+2. from
+
+3. where 
+
+4. having
+
+5.order by 
+
+6. insert 문의 values 절 
+
+7 update 문의 set 절 
+
 select a.* , (select z.contents from BoardContent z where z.BoardID = a.BoardID) as Contents from
 (select BoardID , Subject from BoardContent) a;
 
 서브쿼리는 select 절에서도 사용가능 하며 , from 절에서도 사용이가능함 
+
+
+
 ``` sql
 select a.*,(select  z.contents from BoardContent z where z.BoardID = a.BoardID) as contents  from 
 (SELECT  
