@@ -1,6 +1,6 @@
 # subquery
-select a.* , (select 어쩌구, 저쩌구 from test z where z.boardId = a.boardId) as contents from 
-(select * from board) a 
+select a.* , (select z.contents from BoardContent z where z.BoardID = a.BoardID) as Contents from
+(select BoardID , Subject from BoardContent) a;
 
 서브쿼리는 select 절에서도 사용가능 하며 , from 절에서도 사용이가능함 
 ``` sql
